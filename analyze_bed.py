@@ -5,7 +5,7 @@ import seaborn as sns
 import numpy as np
 
 from bfs_solver import bfs_solver
-from hard_tests import easy_1_sudoku
+from hard_tests import easy_1_sudoku, puzzle_al_escargot
 from sat_solver import solve_sudoku_sat
 from test_importer import prepare_tests
 
@@ -22,7 +22,7 @@ def sudoku_performance_one_method(method, puzzle):
         "steps": result["steps"]
     }
 
-def sudoku_performance_all_methods(methods, puzzles, number_of_tests = 10):
+def sudoku_performance_all_methods(methods, puzzles, number_of_tests = 10, warm_ups = 0):
     for method in methods:
         index = 0
         for puzzle in puzzles:
@@ -33,8 +33,9 @@ def sudoku_performance_all_methods(methods, puzzles, number_of_tests = 10):
             }
             for no_test in range(number_of_tests):
                 results = sudoku_performance_one_method(method, puzzle)
-                metrics["total_delta_time"] += results["delta_time"]
-                metrics["steps_taken"] += results["steps"]
+                if no_test > warm_ups:
+                    metrics["total_delta_time"] += results["delta_time"]
+                    metrics["steps_taken"] += results["steps"]
 
             elapsed_mean_time = metrics["total_delta_time"] / number_of_tests
             mean_steps = metrics["steps_taken"] / number_of_tests
@@ -47,16 +48,18 @@ def sudoku_performance_all_methods(methods, puzzles, number_of_tests = 10):
 # print(solution[1])
 
 
-sudoku_puzzles = prepare_tests(6.0, 7.0)
+# sudoku_puzzles = prepare_tests(6.0, 7.0)
+
+sudoku_puzzles = [puzzle_al_escargot]
 sudoku_methods = [solve_sudoku_sat]
 
+#
+# list_tests = []
+# for i in sudoku_puzzles[:200]:
+#     list_tests.append(i.tolist())
 
-list_tests = []
-for i in sudoku_puzzles[:200]:
-    list_tests.append(i.tolist())
 
-
-sudoku_performance_all_methods(sudoku_methods, list_tests, 100)
+# sudoku_performance_all_methods(sudoku_methods, sudoku_puzzles, 10)
 
 
 def plot_times(times):
@@ -66,6 +69,6 @@ def plot_times(times):
     plt.title('Solving time distribution for BFS')
     plt.show()
 
-plot_times(times)
+# plot_times(times)
 
-print(np.mean(times))
+# print(np.mean(times))
