@@ -1,5 +1,9 @@
 import time
 from pysat.solvers import Solver
+import numpy as np
+
+from hard_tests import platinum_blonde_sudoku
+
 
 def sudoku_to_sat_clauses(board):
     """
@@ -82,25 +86,15 @@ def solve_sudoku_sat(board):
             # print(f"Execution time for SAT: {end_time - start_time:.4f} seconds")  # Print time
 
             return {
-                "solution": solved_board,
-                "steps": 1
+                'solution': solved_board,
+                'steps': 1
             }
         else:
             return None
 
-# Example Sudoku board (0 represents empty cells)
-platinum_blonde_sudoku = [
-    [0, 0, 0, 0, 0, 0, 0, 1, 2],
-    [0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [0, 0, 2, 3, 0, 0, 4, 0, 0],
-    [0, 0, 1, 8, 0, 0, 0, 0, 5],
-    [0, 6, 0, 0, 7, 0, 8, 0, 0],
-    [0, 0, 0, 0, 0, 9, 0, 0, 0],
-    [0, 0, 8, 5, 0, 0, 0, 0, 0],
-    [9, 0, 0, 0, 4, 0, 5, 0, 0],
-    [4, 7, 0, 0, 0, 6, 0, 0, 0]
-]
 
+# sudoku_np = np.array(platinum_blonde_sudoku)
+# print(sudoku_np)
 # solved_board = solve_sudoku_sat(platinum_blonde_sudoku)
 # if solved_board:
 #     for row in solved_board:
