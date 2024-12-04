@@ -97,7 +97,7 @@ def solve_sudoku_sat(board):
 # print(sudoku_np)
 # solved_board = solve_sudoku_sat(platinum_blonde_sudoku)
 # if solved_board:
-#     for row in solved_board:
+#     for row in solved_board['solution']:
 #         print(row)
 # else:
 #     print("No solution exists.")

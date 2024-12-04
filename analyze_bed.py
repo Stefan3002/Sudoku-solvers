@@ -8,6 +8,8 @@ times = []
 def sudoku_performance_one_method(method, puzzle):
     gc.collect()
     gc.disable()
+    if not isinstance(puzzle, list):
+        puzzle = puzzle.tolist()
     start_time = time.perf_counter()
     result = method(puzzle)
     end_time = time.perf_counter()
@@ -60,12 +62,7 @@ def sudoku_performance_all_methods(method, puzzles, number_of_tests = 10, warm_u
 # sudoku_performance_all_methods(sudoku_methods, sudoku_puzzles, 10)
 
 
-def plot_times(times):
-    sns.histplot(times, kde=True, bins=10, color='skyblue', edgecolor='black')
-    plt.xlabel('Solving time (seconds)')
-    plt.ylabel('Frequency')
-    plt.title('Solving time distribution for BFS')
-    plt.show()
 
-# plot_times(times)
+
+
 
