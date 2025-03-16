@@ -8,7 +8,7 @@ def select_data_difficulty(dataframe, min_difficulty, max_difficulty):
     return dataframe[(dataframe.difficulty >= min_difficulty) & (dataframe.difficulty <= max_difficulty)]
 
 def import_tests(min_difficulty, max_difficulty):
-    dataframe = pd.read_csv("data/sudoku-3m.csv", nrows=100000)
+    dataframe = pd.read_csv("data/sudoku-3m.csv", nrows=None)
     # print(dataframe[:10])
     # Max is 8.5
     # print(np.max(dataframe.difficulty))
