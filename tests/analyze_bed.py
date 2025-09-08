@@ -37,29 +37,7 @@ def sudoku_performance_all_methods(method, puzzles, number_of_tests = 10, warm_u
                 times.append(results["delta_time"])
                 metrics["total_delta_time"] += results["delta_time"]
                 metrics["steps_taken"] += results["steps"]
-
-        # elapsed_mean_time = metrics["total_delta_time"] / number_of_tests
-        # mean_steps = metrics["steps_taken"] / number_of_tests
-        # print(f"{method} on {puzzle} puzzle yields {elapsed_mean_time}")
-        # print(f"{method} on {puzzle} puzzle yields {mean_steps}")
     return metrics, times
-
-# solution = bfs_solver(easy_sudoku)
-# print(solution[1])
-
-
-# sudoku_puzzles = prepare_tests(6.0, 7.0)
-
-# sudoku_puzzles = [puzzle_al_escargot]
-# sudoku_methods = [bfs_solver]
-
-#
-# list_tests = []
-# for i in sudoku_puzzles[:200]:
-#     list_tests.append(i.tolist())
-
-
-# sudoku_performance_all_methods(sudoku_methods, sudoku_puzzles, 10)
 
 
 

@@ -1,5 +1,4 @@
 import copy
-import time
 
 
 def is_filled(puzzle):
