@@ -1,13 +1,22 @@
 import numpy as np
 import time
 
+# Node class for the Dancing Links structure
+class Node:
+    def __init__(self, row=None, column=None):
+        self.row = row
+        self.column = column
+        self.up = self.down = self.left = self.right = self  # Circular links
+
+# Dancing Links algorithm for solving exact cover problems
 class DancingLinks:
     def __init__(self, matrix):
         self.header = Node()
         self.columns = []
         self.solution = []
-        self.build(matrix)
+        self.build(matrix)  # Build the linked structure from the matrix
 
+    # Build the Dancing Links structure from the exact cover matrix
     def build(self, matrix):
         self.columns = [Node(column=i) for i in range(len(matrix[0]))]
         self.header.right = self.columns[0]
@@ -22,7 +31,7 @@ class DancingLinks:
         self.columns[-1].right = self.header
         self.header.left = self.columns[-1]
 
-        # Build nodes for rows
+        # Build nodes for each row in the matrix
         for row_index, row in enumerate(matrix):
             prev = None
             first_node = None
@@ -31,6 +40,7 @@ class DancingLinks:
                     node = Node(row=row_index, column=col_index)
                     col_node = self.columns[col_index]
 
+                    # Find the last node in the column
                     while col_node.down != self.columns[col_index]:
                         col_node = col_node.down
                     node.up = col_node
@@ -38,6 +48,7 @@ class DancingLinks:
 
                     node.down = self.columns[col_index]
 
+                    # Link nodes in the row
                     if prev:
                         prev.right = node
                         node.left = prev
@@ -45,10 +56,12 @@ class DancingLinks:
                         first_node = node
                     prev = node
 
+            # Close the row circularly
             if prev:
-                prev.right = first_node  # Close the row circularly
+                prev.right = first_node
                 first_node.left = prev
 
+    # Cover a column (remove it from the matrix)
     def cover(self, column):
         col = self.columns[column]
         col.right.left = col.left
@@ -63,6 +76,7 @@ class DancingLinks:
                 row_node = row_node.right
             node = node.down
 
+    # Uncover a column (restore it to the matrix)
     def uncover(self, column):
         col = self.columns[column]
         col.right.left = col
@@ -77,8 +91,7 @@ class DancingLinks:
                 row_node = row_node.right
             node = node.down
 
-
-
+    # Select the column with the fewest 1s (heuristic for efficiency)
     def select_column(self):
         min_ones = float('inf')
         selected_column = None
@@ -95,14 +108,15 @@ class DancingLinks:
             col = col.right
         return selected_column
 
+    # Recursive DLX solver
     def solve(self, iteration_count=0, max_iterations=1000000000):
         # if iteration_count > max_iterations:
         #     return None
         if self.header.right == self.header:
-            return self.solution
+            return self.solution  # Solution found
 
         column = self.select_column()
-        if column is None:  # If no column is selected, we should stop
+        if column is None:  # No column to select, stop
             return None
         self.cover(column.column)
 
@@ -129,24 +143,19 @@ class DancingLinks:
         self.uncover(column.column)
         return None
 
-class Node:
-    def __init__(self, row=None, column=None):
-        self.row = row
-        self.column = column
-        self.up = self.down = self.left = self.right = self
-
+# Helper to get the index for the exact cover matrix
 def get_index(r, c, num, constraint_type, n=9):
     n2 = n * n
     if constraint_type == 0:
-        return r * n + c
+        return r * n + c  # Cell constraint
     elif constraint_type == 1:
-        return n2 + r * n + (num - 1)
+        return n2 + r * n + (num - 1)  # Row constraint
     elif constraint_type == 2:
-        return 2 * n2 + c * n + (num - 1)
+        return 2 * n2 + c * n + (num - 1)  # Column constraint
     elif constraint_type == 3:
-        return 3 * n2 + (r // 3 * 3 + c // 3) * n + (num - 1)
+        return 3 * n2 + (r // 3 * 3 + c // 3) * n + (num - 1)  # Box constraint
 
-
+# Convert a Sudoku puzzle to an exact cover matrix
 def sudoku_to_exact_cover(sudoku, mapping=[]):
     n = 9
     n2 = n * n
@@ -175,6 +184,7 @@ def sudoku_to_exact_cover(sudoku, mapping=[]):
 
     return matrix, mapping
 
+# Reconstruct the Sudoku solution from the DLX result
 def reconstruct_solution(solution, mapping, n=9):
     sudoku = np.zeros((n, n), dtype=int)
     for candidate_row in solution:
@@ -182,18 +192,16 @@ def reconstruct_solution(solution, mapping, n=9):
         sudoku[r, c] = num
     return sudoku
 
-
+# Main function to solve Sudoku using DLX
 def solve_sudoku_dlx(puzzle):
     mapping = []
-    exact_cover_matrix, mapping = sudoku_to_exact_cover(sudoku, mapping)
+    exact_cover_matrix, mapping = sudoku_to_exact_cover(puzzle, mapping)
     dlx = DancingLinks(exact_cover_matrix)
     solution = dlx.solve()
     if solution:
         solved_sudoku = reconstruct_solution(solution, mapping)
-        return(solved_sudoku)
+        return solved_sudoku
     else:
         print("No solution!")
 
-
 # print(solve_sudoku_dlx(sudoku))
-

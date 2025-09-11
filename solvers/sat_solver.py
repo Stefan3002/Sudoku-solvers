@@ -2,7 +2,7 @@ import time
 
 from pysat.solvers import Solver
 
-
+# Convert a Sudoku puzzle into CNF clauses for SAT solving
 def sudoku_to_sat_clauses(board):
     """
     Convert a Sudoku puzzle into CNF clauses for SAT solving.
@@ -42,7 +42,6 @@ def sudoku_to_sat_clauses(board):
                     var(block_row * 3 + i, block_col * 3 + j, k)
                     for i in range(3) for j in range(3)
                 ]
-                # Add clauses that enforce each number appears exactly once per 3x3 subgrid
                 # At least one occurrence in the subgrid
                 clauses.append(block_cells)
                 # At most one occurrence in the subgrid
@@ -58,6 +57,7 @@ def sudoku_to_sat_clauses(board):
 
     return clauses
 
+# Solve a Sudoku puzzle using SAT solving
 def solve_sudoku_sat(board):
     """
     Solve a Sudoku puzzle using SAT solving.
@@ -75,6 +75,7 @@ def solve_sudoku_sat(board):
             solution = solver.get_model()
             solved_board = [[0] * 9 for _ in range(9)]
 
+            # Decode SAT solution into Sudoku board
             for v in solution:
                 if v > 0:  # Only positive literals indicate actual values
                     v -= 1
